@@ -1,0 +1,69 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Family {
+  id       String  @id @default(uuid())
+  name     String
+  items    Item[]
+  iconName String?
+  ref      Int?
+}
+
+model Item {
+  id          String   @id @default(uuid())
+  pictureUrl  String
+  name        String
+  description String
+  iprice      String?
+  flavors     Flavor[]
+  quantity    Int?     @default(1)
+  about       String?
+  cost        Int?
+  refId       String?
+  Family      Family?  @relation(fields: [familyId], references: [id])
+  familyId    String?
+}
+
+model Flavor {
+  id        String  @id @default(uuid())
+  name      String
+  available Boolean @default(true)
+
+  Item   Item?   @relation(fields: [itemId], references: [id])
+  itemId String?
+}
+
+model Popular {
+  id          String  @id @default(uuid())
+  pictureUrl  String
+  name        String
+  description String
+  iprice      String?
+  about       String
+}
+
+model Cart {
+  id         String?
+  name       String
+  pictureUrl String
+  flavor     String
+  quantity   Int
+  price      Int
+  unitId     String  @id @default(uuid())
+}
+
+model Order {
+  id        Int     @id @default(autoincrement())
+  items     String?
+  totalCost Int?
+  date      String
+}
